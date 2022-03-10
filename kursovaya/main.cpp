@@ -1,5 +1,5 @@
 #include "Galerkin.h"
-//#define USE_SECOND_CONDITION
+#define USE_SECOND_CONDITION
 int main()
 {
 	vector<double>x(3), y(3);
@@ -9,6 +9,7 @@ int main()
 	di.resize(n);
 	global_b.resize(n);
 	ggl.resize(ig[n] - ig[0]);
+	ggu.resize(ig[n] - ig[0]);
 
 	for (int i = 0; i < m; i++)
 	{
@@ -22,8 +23,9 @@ int main()
 		AddLocalToGlobal(elems[i]);
 	}
 #ifdef USE_SECOND_CONDITION
-	//uc_kraev2();
+	uc_kraev2();
 #endif
 	uc_kraev1();
-	LOS();
+	SoprGrad();
+	//LOS();
 }

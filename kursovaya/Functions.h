@@ -9,7 +9,7 @@
 #include<algorithm>
 #include<iterator>
 #include<conio.h>
-#define test1
+#define test5
 using namespace std;
 
 int n, m;
@@ -23,7 +23,7 @@ vector<vector<double>> global_A;
 vector<double> global_b;
 
 vector<int> ig, jg;
-vector<double> ggl, di;
+vector<double> ggl, di, ggu;
 
 #ifdef test1
 double function(double x, double y)
@@ -33,12 +33,12 @@ double function(double x, double y)
 
 double Diffusion_coef()
 {
-	return 2;
+	return 1;
 }
 
 double Gamma_coef()
 {
-	return 3;
+	return 0;
 }
 
 double Kraev_us1(int num_f, double x, double y)
@@ -46,7 +46,7 @@ double Kraev_us1(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 5;
+		return x;
 	case 1:
 		return 0;
 	default: 0;
@@ -58,9 +58,11 @@ double Kraev_us2(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 2 * Diffusion_coef() * y;
+		return  Diffusion_coef() * 0;
 	case 1:
-		return -3 * Diffusion_coef();
+		return -1*Diffusion_coef();
+	case 2:
+		return 1 * Diffusion_coef();
 	}
 }
 #endif
@@ -68,17 +70,17 @@ double Kraev_us2(int num_f, double x, double y)
 #ifdef test2
 double function(double x, double y)
 {
-	return 4*(x + y);
+	return 0;
 }
 
 double Diffusion_coef()
 {
-	return 2;
+	return 1;
 }
 
 double Gamma_coef()
 {
-	return 4;
+	return 0;
 }
 
 double Kraev_us1(int num_f, double x, double y)
@@ -98,11 +100,11 @@ double Kraev_us2(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 1;
+		return  Diffusion_coef() * 0;
 	case 1:
-		return 1;
-	default:
-		return 0;
+		return -1 * Diffusion_coef();
+	case 2:
+		return 1 * Diffusion_coef();
 	}
 }
 #endif 
@@ -110,17 +112,17 @@ double Kraev_us2(int num_f, double x, double y)
 #ifdef test3
 double function(double x, double y)
 {
-	return x * x;
+	return 0;
 }
 
 double Diffusion_coef()
 {
-	return 2;
+	return 1;
 }
 
 double Gamma_coef()
 {
-	return 3;
+	return 0;
 }
 
 double Kraev_us1(int num_f, double x, double y)
@@ -140,29 +142,30 @@ double Kraev_us2(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 0;
+		return  Diffusion_coef() * 0;
 	case 1:
-		return 0;
-	default:
-		return 0;
+		return -2*x * Diffusion_coef();
+	case 2:
+		return 2*x * Diffusion_coef();
 	}
 }
 #endif 
 
+
 #ifdef test4
 double function(double x, double y)
 {
-	return 5;
+	return 0;
 }
 
 double Diffusion_coef()
 {
-	return 2;
+	return 1;
 }
 
 double Gamma_coef()
 {
-	return 3;
+	return 0;
 }
 
 double Kraev_us1(int num_f, double x, double y)
@@ -170,7 +173,7 @@ double Kraev_us1(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 5;
+		return x*x + y*y;
 	case 1:
 		return 0;
 	default: 0;
@@ -182,11 +185,15 @@ double Kraev_us2(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 0;
+		return  Diffusion_coef() * 0;
 	case 1:
-		return 0;
-	default:
-		return 0;
+		return -2 * x * Diffusion_coef();
+	case 2:
+		return 2 * x * Diffusion_coef();
+	case 3:
+		return -2 * y * Diffusion_coef();
+	case 4:
+		return 2 * y * Diffusion_coef();
 	}
 }
 #endif 
@@ -194,7 +201,7 @@ double Kraev_us2(int num_f, double x, double y)
 #ifdef test5
 double function(double x, double y)
 {
-	return x * y;
+	return 0;
 }
 
 double Diffusion_coef()
@@ -204,7 +211,7 @@ double Diffusion_coef()
 
 double Gamma_coef()
 {
-	return 1;
+	return 0;
 }
 
 double Kraev_us1(int num_f, double x, double y)
@@ -212,7 +219,7 @@ double Kraev_us1(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return x * y;
+		return x * x * x;
 	case 1:
 		return 0;
 	default: 0;
@@ -224,18 +231,19 @@ double Kraev_us2(int num_f, double x, double y)
 	switch (num_f)
 	{
 	case 0:
-		return 0;
+		return  Diffusion_coef() * 0;
 	case 1:
-		return 0;
-	default:
-		return 0;
+		return -3 * x*x * Diffusion_coef();
+	case 2:
+		return 3 * x*x * Diffusion_coef();
 	}
 }
 #endif 
 
+
 double mes_G(double x1, double x2, double y1, double y2)
 {
-	return (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
+	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
 void uc_kraev1()
@@ -258,6 +266,56 @@ void uc_kraev1()
 		di[v2] = B;
 		global_b[v1] = B * res1;
 		global_b[v2] = B * res2;
+		/*
+		for (int k = ig[v1]; k < ig[v1 + 1]; k++)
+		{
+			ggl[k] = 0;
+		
+		}
+
+		for (int k = ig[v2]; k < ig[v2 + 1]; k++)
+		{
+			ggl[k] = 0;
+
+		}
+
+		for (int k = v1+1; k < n; k++)
+		{
+			for (int l = ig[v1]; l < ig[v1 + 1]; l++)
+			{
+				if (jg[l] == v1)
+				{
+					ggu[l] = 0;
+					break;
+				}
+
+				if (jg[l] > v1)
+					break;
+
+			}
+
+		}
+
+		for (int k = v2 + 1; k < n; k++)
+		{
+			for (int l = ig[v2]; l < ig[v2 + 1]; l++)
+			{
+				if (jg[l] == v2)
+				{
+					ggu[l] = 0;
+					break;
+				}
+
+				if (jg[l] > v2)
+					break;
+
+			}
+
+		}*/
+
+
+
+	
 	}
 	fin.close();
 }

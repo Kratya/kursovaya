@@ -38,7 +38,7 @@ void LOS()
 	vector <double>pk(n, 0);
 	vector <double>xk(n, 0);
 	Ma.resize(n);
-	double maxiter = 100;
+	double maxiter = 1000;
 	double eps = 1e-12;
 
 	for (int i = 0; i < n; ++i)
@@ -74,7 +74,61 @@ void LOS()
 		++count;
 
 	}
-	cout << "eps = " << eps << endl;
 	for (int i = 0; i < n; i++)
 		cout << x0[i] << '\n';
 }
+
+//----------метод сопряженных градиентов---------------
+
+void SoprGrad()
+{
+	cout << "Reshenie metodom sopryjennyh gradientov:" << endl;
+	int k = 0;
+	vector <double>y(n, 0);
+	vector <double>x(n, 0);
+	vector <double>ax(n, 0);
+	vector <double>ap(n, 0);
+	vector <double>z(n, 0);
+	vector <double>z1(n, 0);
+	vector <double>p(n, 0);
+
+	double a, b, nz;
+	
+	double e = 1e-8;
+
+	//  cout<<"Nevyazka na4al'nogo priblijeniya ravna:"<<endl;
+	Mult(x, ax);
+	for (int i = 0; i < n; i++) 
+		z[i] = global_b[i] - ax[i];
+
+	//  PrintV(z,n);
+	if (Mult_scal(z, z) != 0)
+	{
+		for (int i = 0; i < n; i++)  
+			p[i]= z[i];
+		nz = 1000.;
+		while (nz > e) {
+			Mult(p, ap);
+			a = Mult_scal(z, p) / Mult_scal(z, ap);
+			for (int i = 0; i < n; i++) 
+			{
+				y[i] = x[i] + a * p[i];
+				z1[i] = z[i] - a * ap[i];
+			}
+			nz = sqrt(Mult_scal(z1, z1));
+			b = Mult_scal(z1, ap) / Mult_scal(p, ap);
+			for (int i = 0; i < n; i++) 
+			{
+				p[i] = z1[i] - b * p[i];
+				z[i] = z1[i];
+				x[i] = y[i];
+			}
+			k++;
+		}	
+	}
+
+	for (int i = 0; i < n; i++)
+		cout << y[i] << '\n';
+}
+
+

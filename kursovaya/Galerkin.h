@@ -64,24 +64,24 @@ void Portrait()
 
 void G(vector<double>& x, vector<double>& y)
 {
-	double det = abs((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]));
-	double mult = Diffusion_coef() * det / 2;
+	double det = ((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]));
+	double mult = Diffusion_coef() * abs(det) / 2;
 	vector<vector<double>> a(3);
 
 	for (int i = 0; i < 3; i++)
 		a[i].resize(3);
 
-	a[0][0] = (x[1] * y[2] - y[1] * x[2]);
-	a[0][1] = (-(y[2] - y[1]));
-	a[0][2] = (x[2] - x[1]);
+	a[0][0] = (x[1] * y[2] - y[1] * x[2]) / det;
+	a[0][1] = (-(y[2] - y[1])) / det;
+	a[0][2] = (x[2] - x[1]) / det;
 
-	a[1][0] = (-x[0] * y[2] + x[2] * y[0]);
-	a[1][1] = (y[2] - y[0]);
-	a[1][2] = (-x[2] + x[0]);
+	a[1][0] = (-x[0] * y[2] + x[2] * y[0]) / det;
+	a[1][1] = (y[2] - y[0]) / det;
+	a[1][2] = (-x[2] + x[0]) / det;
 
-	a[2][0] = (x[0] * y[1] - x[1] * y[0]);
-	a[2][1] = (-y[1] + y[0]);
-	a[2][2] = (x[1] - x[0]);
+	a[2][0] = (x[0] * y[1] - x[1] * y[0]) / det;
+	a[2][1] = (-y[1] + y[0]) / det;
+	a[2][2] = (x[1] - x[0]) / det;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -94,12 +94,12 @@ void G(vector<double>& x, vector<double>& y)
 void M(vector<double>& x, vector<double>& y)
 {
 	double det = abs((x[1] - x[0]) * (y[2] - y[0]) - (x[2] - x[0]) * (y[1] - y[0]));
-	double* f = new double[3], mult = Gamma_coef() * det / 24;
+	double* f = new double[3], mult = det / 24;
 	for (int i = 0; i < 3; i++)
 	{
 		M_matrix[i].resize(3);
 		for (int j = 0; j < 3; j++)
-			(i == j) ? M_matrix[i][j] = 2 * mult : M_matrix[i][j] = mult;
+			(i == j) ? M_matrix[i][j] = Gamma_coef()*2 * mult : M_matrix[i][j] = Gamma_coef()*mult;
 	}
 
 	f[0] = mult * function(x[0], y[0]);
@@ -130,19 +130,32 @@ void AddLocalToGlobal(vector<int>elems)
 	{
 		di[elems[i]] += local_matrix[i][i];
 		global_b[elems[i]] += local_b[i];
+		
 		for (int j = 0; j < i; j++)
 		{
 			auto a = elems[i];
 			auto b = elems[j];
 			if (a < b) swap(a, b);
 
-			auto begin = jg.begin() + ig[a];
-			if (ig[a + 1] > ig[a])
+			//auto begin = jg.begin() + ig[a];
+			/*if (ig[a + 1] > ig[a])
 			{
 				auto end = jg.begin() + ig[a + 1] - 1;
 				auto iter = lower_bound(begin, end, b); 
 				auto index = iter - jg.begin();
 				ggl[index] += local_matrix[i][j];
+				ggu[index] = ggl[index];
+			
+			}*/
+
+			for (int k = ig[a]; k < ig[a + 1]; k++)
+			{
+				if (jg[k] == b)
+				{
+					ggl[k] += local_matrix[i][j];
+					break;
+				}
+
 			}
 		}
 	}
